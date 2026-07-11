@@ -146,4 +146,4 @@ Targets **Odoo 17.0 Community** only — no Enterprise-only apps (Studio, Docume
 
 ## License
 
-No license is set yet — add one before treating this as open source or sharing it outside your organization (e.g. MIT for the code snippets, or CC BY 4.0 for the handbook text as a whole).
+This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
