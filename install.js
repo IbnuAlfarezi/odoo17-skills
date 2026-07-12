@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * Installer for the "odoo-17-dev-standards" Agent Skill.
+ * Installer for the "odoo17-skills" Agent Skill.
  *
  * Copies (or symlinks) this repo's SKILL.md + references/ into whichever AI
  * coding tool's skills directory you point it at. No dependencies — plain
@@ -24,7 +24,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const SKILL_NAME = 'odoo-17-dev-standards';
+const SKILL_NAME = 'odoo17-skills';
 const REPO_ROOT = __dirname;
 const SKILL_ENTRIES = ['SKILL.md', 'references']; // only the skill payload — not README/LICENSE/this script
 const HOME = os.homedir();
@@ -41,21 +41,21 @@ const TARGETS = {
     label: 'Claude Code',
     personal: () => path.join(HOME, '.claude', 'skills', SKILL_NAME),
     project: () => path.join(CWD, '.claude', 'skills', SKILL_NAME),
-    firstUse: '/odoo-17-dev-standards review this model for anti-patterns',
+    firstUse: '/odoo17-skills review this model for anti-patterns',
     confidence: 'confirmed',
   },
   antigravity: {
     label: 'Google Antigravity (IDE & CLI)',
     personal: () => path.join(HOME, '.gemini', 'config', 'skills', SKILL_NAME),
     project: () => path.join(CWD, '.agents', 'skills', SKILL_NAME),
-    firstUse: 'Use @odoo-17-dev-standards to review this module',
+    firstUse: 'Use @odoo17-skills to review this module',
     confidence: 'confirmed',
     note: "Antigravity's skills path has already moved more than once since its Nov 2025 launch — check Settings \u2192 Skills for the current path if this isn't picked up.",
   },
   cursor: {
     label: 'Cursor',
     project: () => path.join(CWD, '.cursor', 'skills', SKILL_NAME),
-    firstUse: '@odoo-17-dev-standards review this model',
+    firstUse: '@odoo17-skills review this model',
     confidence: 'confirmed',
     note: 'Cursor is project-scoped only (no personal/global skills directory) — --global is ignored for this tool.',
   },
@@ -63,34 +63,34 @@ const TARGETS = {
     label: 'OpenAI Codex CLI',
     personal: () => path.join(HOME, '.codex', 'skills', SKILL_NAME),
     project: () => path.join(CWD, '.codex', 'skills', SKILL_NAME),
-    firstUse: 'Use odoo-17-dev-standards to review this module',
+    firstUse: 'Use odoo17-skills to review this module',
     confidence: 'confirmed',
   },
   kiro: {
     label: 'Kiro CLI',
     personal: () => path.join(HOME, '.kiro', 'skills', SKILL_NAME),
     project: () => path.join(CWD, '.kiro', 'skills', SKILL_NAME),
-    firstUse: 'Use odoo-17-dev-standards to review this module',
+    firstUse: 'Use odoo17-skills to review this module',
     confidence: 'confirmed',
   },
   'gemini-cli': {
     label: 'Gemini CLI',
     personal: () => path.join(HOME, '.gemini', 'skills', SKILL_NAME),
-    firstUse: 'Use odoo-17-dev-standards to review this module',
+    firstUse: 'Use odoo17-skills to review this module',
     confidence: 'best-effort',
     note: "Single-source-verified, and distinct from Antigravity's ~/.gemini/config/skills/ \u2014 confirm against Gemini CLI's current docs.",
   },
   opencode: {
     label: 'OpenCode',
     project: () => path.join(CWD, '.agents', 'skills', SKILL_NAME),
-    firstUse: 'opencode run @odoo-17-dev-standards review this model',
+    firstUse: 'opencode run @odoo17-skills review this model',
     confidence: 'best-effort',
     note: "OpenCode's skill location is configurable (skill.paths in its own config). .agents/skills/ is the emerging cross-tool default, not a confirmed OpenCode-specific one \u2014 check your opencode config if this isn't picked up.",
   },
   copilot: {
     label: 'GitHub Copilot',
     manualOnly: true,
-    firstUse: 'Ask Copilot to use odoo-17-dev-standards to review this module',
+    firstUse: 'Ask Copilot to use odoo17-skills to review this module',
     note: 'No standard skills folder found for Copilot \u2014 paste SKILL.md content into your Copilot instructions, or reference it manually in chat.',
   },
 };

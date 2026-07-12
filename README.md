@@ -58,7 +58,7 @@ odoo-17-dev-standards/
 ├── README.md                                 ← you are here
 ├── LICENSE
 ├── .gitignore
-├── package.json                              ← enables `npx odoo-17-dev-standards ...`
+├── package.json                              ← enables `npx odoo17-skills ...`
 ├── install.js                                ← cross-tool installer, see below
 ├── SKILL.md                                  ← Agent Skill entry point (router)
 └── references/
@@ -98,25 +98,25 @@ node install.js --path ./anywhere   # works for any tool not explicitly listed
 It also runs with nothing installed, straight from the repo:
 
 ```bash
-npx github:<your-username>/odoo-17-dev-standards --claude-code
+npx github:IbnuAlfarezi/odoo17-skills --claude-code
 ```
 
-Publish it to npm under your own package name and `npx odoo-17-dev-standards --claude-code` works the same way — `package.json` already has the `bin` entry set up for it.
+Publish it to npm under your own package name and `npx odoo17-skills --claude-code` works the same way — `package.json` already has the `bin` entry set up for it.
 
 ### Choose your tool
 
 | Tool | Install | First use |
 | --- | --- | --- |
-| Claude Code | `node install.js --claude-code` | `/odoo-17-dev-standards review this model` |
+| Claude Code | `node install.js --claude-code` | `/odoo17-skills review this model` |
 | Claude ([claude.ai](https://claude.ai)) | Zip the repo → **Settings → Features** → upload as a custom Skill (Pro/Max/Team/Enterprise, code execution enabled) | Ask about your Odoo code — activates automatically |
 | Claude API / Platform | Upload via the [Skills API](https://platform.claude.com/docs/en/build-with-claude/skills-guide) (`/v1/skills`) | Workspace-wide once uploaded |
-| Google Antigravity | `node install.js --antigravity` | `Use @odoo-17-dev-standards to review this module` |
-| Cursor | `node install.js --cursor` *(project-only — no personal dir)* | `@odoo-17-dev-standards review this model` |
-| OpenAI Codex CLI | `node install.js --codex` | `Use odoo-17-dev-standards to review this module` |
-| Kiro CLI | `node install.js --kiro` | `Use odoo-17-dev-standards to review this module` |
-| Gemini CLI *(best-effort)* | `node install.js --gemini-cli` | `Use odoo-17-dev-standards to review this module` |
-| OpenCode *(best-effort)* | `node install.js --opencode` | `opencode run @odoo-17-dev-standards review this model` |
-| GitHub Copilot | No standard folder — paste `SKILL.md`'s content into your Copilot instructions manually | Ask Copilot to use odoo-17-dev-standards |
+| Google Antigravity | `node install.js --antigravity` | `Use @odoo17-skills to review this module` |
+| Cursor | `node install.js --cursor` *(project-only — no personal dir)* | `@odoo17-skills review this model` |
+| OpenAI Codex CLI | `node install.js --codex` | `Use odoo17-skills to review this module` |
+| Kiro CLI | `node install.js --kiro` | `Use odoo17-skills to review this module` |
+| Gemini CLI *(best-effort)* | `node install.js --gemini-cli` | `Use odoo17-skills to review this module` |
+| OpenCode *(best-effort)* | `node install.js --opencode` | `opencode run @odoo17-skills review this model` |
+| GitHub Copilot | No standard folder — paste `SKILL.md`'s content into your Copilot instructions manually | Ask Copilot to use odoo17-skills |
 | Anything else | `node install.js --path ./wherever` | Depends on your tool |
 
 Add `--global` to any row with a personal/global directory (Claude Code, Antigravity, Codex, Kiro) to install once for every project instead of per-repo — `node install.js --list` prints both paths for each tool before you commit to one.
