@@ -56,6 +56,10 @@ These are the details most likely to be wrong in code copied from a v16 tutorial
 ```
 odoo-17-dev-standards/
 ├── README.md                                 ← you are here
+├── LICENSE
+├── .gitignore
+├── package.json                              ← enables `npx odoo-17-dev-standards ...`
+├── install.js                                ← cross-tool installer, see below
 ├── SKILL.md                                  ← Agent Skill entry point (router)
 └── references/
     ├── 01-module-architecture.md
@@ -81,43 +85,43 @@ odoo-17-dev-standards/
 
 `SKILL.md` follows the open **Agent Skills** format (YAML frontmatter with `name`/`description`, Markdown instructions, linked reference files) — the same format across every surface below, so nothing needs to be reformatted per tool.
 
-### Claude ([claude.ai](https://claude.ai))
+### Automated install
 
-1. Zip the folder if you don't already have `odoo-17-dev-standards.skill`: `zip -r odoo-17-dev-standards.skill odoo-17-dev-standards/`
-2. **Settings → Features** → upload it as a custom Skill. Requires Pro, Max, Team, or Enterprise with code execution enabled.
-3. Skills on claude.ai are per-user — each teammate who wants it uploads their own copy; there's currently no org-wide push from admin settings.
-
-### Claude Code
-
-No upload — Claude Code Skills are filesystem-based:
+`install.js` is plain Node (no dependencies) and copies — or symlinks, with `--symlink` — this skill into whichever tool you point it at:
 
 ```bash
-# Personal — available in every project
-cp -r odoo-17-dev-standards ~/.claude/skills/
-
-# Project-only — commit this alongside your Odoo addon repo
-cp -r odoo-17-dev-standards <your-odoo-repo>/.claude/skills/
+node install.js --claude-code       # see the table below for every --<tool> flag
+node install.js --list              # print every path this script knows, with its confidence level
+node install.js --path ./anywhere   # works for any tool not explicitly listed
 ```
 
-### Claude API / Claude Platform
-
-Upload via the [Skills API](https://platform.claude.com/docs/en/build-with-claude/skills-guide) (`/v1/skills`) for workspace-wide sharing across your team. Requires the code execution tool plus the `skills-2025-10-02` and `files-api-2025-04-14` beta headers.
-
-### Google Antigravity
-
-Antigravity adopted the same open Agent Skills standard, so the folder works as-is:
+It also runs with nothing installed, straight from the repo:
 
 ```bash
-unzip odoo-17-dev-standards.skill
-
-# Global — every project
-mkdir -p ~/.gemini/config/skills && cp -r odoo-17-dev-standards ~/.gemini/config/skills/
-
-# Project-only
-mkdir -p <your-odoo-repo>/.agents/skills && cp -r odoo-17-dev-standards <your-odoo-repo>/.agents/skills/
+npx github:<your-username>/odoo-17-dev-standards --claude-code
 ```
 
-Antigravity is a young, fast-moving product and its skills directory has moved once or twice already — if it isn't picked up, check the Skills section of its settings for the current path.
+Publish it to npm under your own package name and `npx odoo-17-dev-standards --claude-code` works the same way — `package.json` already has the `bin` entry set up for it.
+
+### Choose your tool
+
+| Tool | Install | First use |
+| --- | --- | --- |
+| Claude Code | `node install.js --claude-code` | `/odoo-17-dev-standards review this model` |
+| Claude ([claude.ai](https://claude.ai)) | Zip the repo → **Settings → Features** → upload as a custom Skill (Pro/Max/Team/Enterprise, code execution enabled) | Ask about your Odoo code — activates automatically |
+| Claude API / Platform | Upload via the [Skills API](https://platform.claude.com/docs/en/build-with-claude/skills-guide) (`/v1/skills`) | Workspace-wide once uploaded |
+| Google Antigravity | `node install.js --antigravity` | `Use @odoo-17-dev-standards to review this module` |
+| Cursor | `node install.js --cursor` *(project-only — no personal dir)* | `@odoo-17-dev-standards review this model` |
+| OpenAI Codex CLI | `node install.js --codex` | `Use odoo-17-dev-standards to review this module` |
+| Kiro CLI | `node install.js --kiro` | `Use odoo-17-dev-standards to review this module` |
+| Gemini CLI *(best-effort)* | `node install.js --gemini-cli` | `Use odoo-17-dev-standards to review this module` |
+| OpenCode *(best-effort)* | `node install.js --opencode` | `opencode run @odoo-17-dev-standards review this model` |
+| GitHub Copilot | No standard folder — paste `SKILL.md`'s content into your Copilot instructions manually | Ask Copilot to use odoo-17-dev-standards |
+| Anything else | `node install.js --path ./wherever` | Depends on your tool |
+
+Add `--global` to any row with a personal/global directory (Claude Code, Antigravity, Codex, Kiro) to install once for every project instead of per-repo — `node install.js --list` prints both paths for each tool before you commit to one.
+
+*"Best-effort" rows come from a single source or a fast-moving product rather than official, multiply-confirmed docs; `node install.js --list` prints the same caveat inline, so it isn't hidden once you're past this table. Two tools you may recognize from other "install this skill everywhere" tables — AdaL CLI and Autohand Code — aren't listed here on purpose: I couldn't find a documented skills-folder convention for either, and guessing felt worse than pointing you at `--path`.*
 
 ### Just read it
 
@@ -125,7 +129,7 @@ No installation required. Every file is plain Markdown — clone the repo and st
 
 ### How it gets triggered
 
-Every surface above uses the same **progressive disclosure** model: only `name` + `description` from `SKILL.md`'s frontmatter are loaded up front (cheap, always-on); the full `SKILL.md` body loads only once a request looks relevant; individual `references/*.md` files load only when the specific topic is actually needed. You don't have to invoke it by name — describe the Odoo task normally and it activates on its own — though naming it explicitly (e.g. "use the Odoo 17 standards skill") guarantees it fires.
+Every surface above uses the same **progressive disclosure** model: only `name` + `description` from `SKILL.md`'s frontmatter are loaded up front (cheap, always-on); the full `SKILL.md` body loads only once a request looks relevant; individual `references/*.md` files load only when the specific topic is actually needed. You don't have to invoke it by name — describe the Odoo task normally and it activates on its own — though naming it explicitly (as in the "First use" column above) guarantees it fires.
 
 ---
 
@@ -135,6 +139,7 @@ Every surface above uses the same **progressive disclosure** model: only `name` 
 - Verify any Odoo-17-specific claim against the current official documentation before merging a change; don't extrapolate from v16 material or assume an LLM's memory is current on framework version details.
 - Preserve the section shape (Explanation → Best Practice → Why It Matters → ❌ Wrong → ✅ Correct → Performance → Security → Odoo 17 Notes) in new content so the handbook stays consistent to scan.
 - If you repackage this as a `.skill` zip, keep `name` lowercase-with-hyphens (≤64 chars) and `description` ≤1024 characters — both are hard limits of the Skill format, not just style preferences.
+- Tool install paths in `install.js`'s `TARGETS` object (and the table above) will drift as these products evolve — re-verify against current docs periodically, especially anything marked `best-effort`, and run `node install.js --list` after any change to confirm the paths print as expected.
 
 ## Security note
 
