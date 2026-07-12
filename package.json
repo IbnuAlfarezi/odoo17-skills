@@ -1,0 +1,34 @@
+{
+  "name": "odoo-17-dev-standards",
+  "version": "1.0.0",
+  "description": "Odoo 17 Community Development Best Practices — an Agent Skill (SKILL.md) installable across Claude Code, Claude, Google Antigravity, Cursor, OpenAI Codex CLI, Kiro, and more.",
+  "bin": {
+    "odoo-17-dev-standards": "./install.js"
+  },
+  "files": [
+    "SKILL.md",
+    "references",
+    "install.js"
+  ],
+  "keywords": [
+    "odoo",
+    "odoo17",
+    "agent-skills",
+    "skill",
+    "SKILL.md",
+    "claude",
+    "claude-code",
+    "antigravity",
+    "cursor",
+    "codex"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IbnuAlfarezi/odoo17-skills"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "private": false
+}
