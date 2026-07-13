@@ -59,7 +59,7 @@ odoo-17-dev-standards/
 ├── LICENSE
 ├── .gitignore
 ├── package.json                              ← enables `npx odoo17-skills ...`
-├── install.js                                ← cross-tool installer, see below
+├── install.js                                ← installer, invoked via `npx odoo17-skills`
 ├── SKILL.md                                  ← Agent Skill entry point (router)
 └── references/
     ├── 01-module-architecture.md
@@ -85,43 +85,48 @@ odoo-17-dev-standards/
 
 `SKILL.md` follows the open **Agent Skills** format (YAML frontmatter with `name`/`description`, Markdown instructions, linked reference files) — the same format across every surface below, so nothing needs to be reformatted per tool.
 
-### Automated install
+### Install
 
-`install.js` is plain Node (no dependencies) and copies — or symlinks, with `--symlink` — this skill into whichever tool you point it at:
+One command. No cloning, no `npm install`, nothing else required — just Node.js ≥ 18.
 
 ```bash
-node install.js --claude-code       # see the table below for every --<tool> flag
-node install.js --list              # print every path this script knows, with its confidence level
-node install.js --path ./anywhere   # works for any tool not explicitly listed
+npx odoo17-skills --<tool>
 ```
 
-It also runs with nothing installed, straight from the repo:
+Add `--global` to install once for every project on your machine instead of per-repo. Add `--symlink` to link instead of copy (the skill stays in sync automatically when the package updates).
+
+```bash
+# Examples
+npx odoo17-skills --claude-code              # project-local
+npx odoo17-skills --claude-code --global     # personal, every project
+npx odoo17-skills --antigravity --global
+npx odoo17-skills --list                     # show all supported tools + install paths
+npx odoo17-skills --path ./anywhere          # any custom path
+```
+
+Alternatively, run directly from GitHub without installing anything:
 
 ```bash
 npx github:IbnuAlfarezi/odoo17-skills --claude-code
 ```
 
-Publish it to npm under your own package name and `npx odoo17-skills --claude-code` works the same way — `package.json` already has the `bin` entry set up for it.
-
 ### Choose your tool
 
-| Tool | Install | First use |
+| Tool | Command | First use |
 | --- | --- | --- |
-| Claude Code | `node install.js --claude-code` | `/odoo17-skills review this model` |
-| Claude ([claude.ai](https://claude.ai)) | Zip the repo → **Settings → Features** → upload as a custom Skill (Pro/Max/Team/Enterprise, code execution enabled) | Ask about your Odoo code — activates automatically |
-| Claude API / Platform | Upload via the [Skills API](https://platform.claude.com/docs/en/build-with-claude/skills-guide) (`/v1/skills`) | Workspace-wide once uploaded |
-| Google Antigravity | `node install.js --antigravity` | `Use @odoo17-skills to review this module` |
-| Cursor | `node install.js --cursor` *(project-only — no personal dir)* | `@odoo17-skills review this model` |
-| OpenAI Codex CLI | `node install.js --codex` | `Use odoo17-skills to review this module` |
-| Kiro CLI | `node install.js --kiro` | `Use odoo17-skills to review this module` |
-| Gemini CLI *(best-effort)* | `node install.js --gemini-cli` | `Use odoo17-skills to review this module` |
-| OpenCode *(best-effort)* | `node install.js --opencode` | `opencode run @odoo17-skills review this model` |
-| GitHub Copilot | No standard folder — paste `SKILL.md`'s content into your Copilot instructions manually | Ask Copilot to use odoo17-skills |
-| Anything else | `node install.js --path ./wherever` | Depends on your tool |
+| **Claude Code** | `npx odoo17-skills --claude-code` | `/odoo17-skills review this model` |
+| **Claude** ([claude.ai](https://claude.ai)) | Zip this repo → **Settings → Features** → upload as a custom Skill | Ask about your Odoo code — activates automatically |
+| **Claude API / Platform** | Upload via the [Skills API](https://platform.claude.com/docs/en/build-with-claude/skills-guide) | Workspace-wide once uploaded |
+| **Google Antigravity** | `npx odoo17-skills --antigravity --global` | `Use @odoo17-skills to review this module` |
+| **Cursor** | `npx odoo17-skills --cursor` *(project-only)* | `@odoo17-skills review this model` |
+| **OpenAI Codex CLI** | `npx odoo17-skills --codex --global` | `Use odoo17-skills to review this module` |
+| **Kiro CLI** | `npx odoo17-skills --kiro --global` | `Use odoo17-skills to review this module` |
+| **Gemini CLI** ⚠️ | `npx odoo17-skills --gemini-cli --global` | `Use odoo17-skills to review this module` |
+| **OpenCode** ⚠️ | `npx odoo17-skills --opencode` | `opencode run @odoo17-skills review this model` |
+| **GitHub Copilot** | Paste `SKILL.md` content into your Copilot instructions manually | Ask Copilot to use odoo17-skills |
+| **Anything else** | `npx odoo17-skills --path ./wherever` | Depends on your tool |
 
-Add `--global` to any row with a personal/global directory (Claude Code, Antigravity, Codex, Kiro) to install once for every project instead of per-repo — `node install.js --list` prints both paths for each tool before you commit to one.
-
-*"Best-effort" rows come from a single source or a fast-moving product rather than official, multiply-confirmed docs; `node install.js --list` prints the same caveat inline, so it isn't hidden once you're past this table. Two tools you may recognize from other "install this skill everywhere" tables — AdaL CLI and Autohand Code — aren't listed here on purpose: I couldn't find a documented skills-folder convention for either, and guessing felt worse than pointing you at `--path`.*
+> ⚠️ **Best-effort** — path verified from a single source or a fast-moving product. Run `npx odoo17-skills --list` to see the exact path before committing to it.
 
 ### Just read it
 
@@ -139,7 +144,7 @@ Every surface above uses the same **progressive disclosure** model: only `name` 
 - Verify any Odoo-17-specific claim against the current official documentation before merging a change; don't extrapolate from v16 material or assume an LLM's memory is current on framework version details.
 - Preserve the section shape (Explanation → Best Practice → Why It Matters → ❌ Wrong → ✅ Correct → Performance → Security → Odoo 17 Notes) in new content so the handbook stays consistent to scan.
 - If you repackage this as a `.skill` zip, keep `name` lowercase-with-hyphens (≤64 chars) and `description` ≤1024 characters — both are hard limits of the Skill format, not just style preferences.
-- Tool install paths in `install.js`'s `TARGETS` object (and the table above) will drift as these products evolve — re-verify against current docs periodically, especially anything marked `best-effort`, and run `node install.js --list` after any change to confirm the paths print as expected.
+- Tool install paths in `install.js`'s `TARGETS` object (and the table above) will drift as these products evolve — re-verify against current docs periodically, especially anything marked ⚠️ best-effort, and run `npx odoo17-skills --list` after any change to confirm the paths print as expected.
 
 ## Security note
 
